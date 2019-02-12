@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rest API Demo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container">
+    <h1>Contacts Dictionary</h1>
+    <select id="contacts" class="form-control" onchange="dispDetails()" size="6">
+    </select>
+
+    <p>
+        Name:<input class="form-control" type="text" name="name" id="name">
+        Phone:<input class="form-control" type="text" name="phone" id="phone">
+        <input type="hidden" name="Id" id="Id"><br>
+
+        <button type="submit" class="btn btn-success" id="updateContact" onclick="updateDetails()">Update Details</button> 
+        <button type="submit" id="addContact" class="btn btn-primary">Add Contact</button>
+        <button type="submit" id="delContact" class="btn btn-danger">Delete Contact</button>
+    </p>
+
+    <p id="res"></p>
+    <script type="text/javascript">
+        $(document).ready(function(){
+          $.ajax({
+            url: '/contacts',
+            type: 'GET',
+            success: function(response){
+                var options = "";
+                for(var i = 0;i < response.length; i++)
+                {
+                    options += "<option value='" + response[i]._id + "'>" +
+                    response[i].name +" ( "+ response[i].phone +" ) "+"</option>";
+                }
+                $("#contacts").html(options);
+            }
+        });
+
+          $("#addContact").on('click',function() {
+            var URL = "contacts/" ;
+            $.ajax({
+                type: "POST",
+                url: URL,
+                data: "name="+$("#name").val()+"&phone="+$("#phone").val(),
+                success: function (response){
+                    
+                    // alert("Added successful...refreshing the page!!");
+                    window.location.reload();
+                    $("#res").html("Added 1 new contact");
+                    
+                },
+                error: function (data){
+                    console.log(data);
+                }
+            });
+        });
+
+          $("#delContact").on('click',function() {
+            if (confirm("Delete " + $("#name").val() + "?")) {
+                var URL = "contacts/" + $("#contacts").val();
+                $.ajax({
+                    type: "DELETE",
+                    url: URL,
+                    success: function (response){
+                        
+                        window.location.reload();
+                        $("#res").html("Updated");
+
+                    },
+                    error: function (data){
+                        console.log(data);
+                    }
+                });
+            }
+        });
+
+
+      });
+
+
+
+        function dispDetails() {
+            var URL = "contacts/" + $("#contacts").val();
+
+            $.ajax({
+                type: "GET",
+                url: URL,
+                cache: false,
+                success: function (response){
+                    $("#name").val(response.name);
+                    $("#phone").val(response.phone);
+                },
+                error: function (data){
+                    console.log("Problem Occured");
+                }
+            });
+        }
+
+        function updateDetails() {
+            var URL = "contacts/" + $("#contacts").val();
+            var newName = $("#name").val();
+            var newPhone = $("#phone").val();
+            $.ajax({
+                type: "PUT",
+                url: URL,
+                data: {name:newName , phone:newPhone },
+                cache: false,
+                success: function (response){
+                    $("#res").val("Updated");
+                    alert("Update successful...refreshing the page!!");
+                    window.location.reload();
+                    
+                },
+                error: function (data){
+                    console.log(data);
+                }
+            });
+        }
+
+        
+    </script>
+</body>
+</html>
