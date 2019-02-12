@@ -43,7 +43,7 @@ describe('/GET contacts', () => {
       		phone: "01926 68786"
       	}
         chai.request(server)
-            .put('/contacts/5c62cc463fa1f414b02bd579')
+            .put('/contacts/5c6295901c46cf11ec7bed5a')
             .send(contact)
             .end((err, res) => {
                   res.should.have.status(200);
@@ -57,9 +57,11 @@ describe('/GET contacts', () => {
   describe('/Delete del a contacts', () => {
       it('Delete a contact', (done) => {
         chai.request(server)
-            .delete('/contacts/5c62cc463fa1f414b02bd579')
+            .delete('/contacts/5c6295901c46cf11ec7bed5a')
              .end((err, res) => {
                   res.should.have.status(200);
+                  res.body.should.be.a('object');
+                  res.body.should.have.property('message');
               done();
             });
       });
