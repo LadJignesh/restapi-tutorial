@@ -53,3 +53,14 @@ describe('/GET contacts', () => {
             });
       });
   });
+
+  describe('/Delete del a contacts', () => {
+      it('Delete a contact', (done) => {
+        chai.request(server)
+            .delete('/contacts/5c62cc463fa1f414b02bd579')
+             .end((err, res) => {
+                  res.should.have.status(200);
+              done();
+            });
+      });
+  });
