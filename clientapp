@@ -5,14 +5,14 @@ const bodyParser = require('body-parser');
 const TWO_HOURS = 1000*60*60*2;
 
 const {
-	//NODE_ENV = 'development',
+	NODE_ENV = 'development',
 
 	SESS_NAME = 'sid',
 	SESS_SECRET = 'gjhgjkhg',
 	SESS_LIFETIME = TWO_HOURS
 } = process.env;
 
-//const IN_PROD = NODE_ENV === 'production';
+const IN_PROD = NODE_ENV === 'production';
 
 
 //Todo DB
@@ -36,7 +36,7 @@ app.use(session({
 	cookie:{ // Default http
 		maxAge: SESS_LIFETIME,
 		sameSite: true,
-		//secure: IN_PROD //secure in production
+		secure: IN_PROD //secure in production
 	}
 }));
 
